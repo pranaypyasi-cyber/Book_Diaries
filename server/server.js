@@ -6,12 +6,12 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "Book library server chal raha hai" });
+  res.json({ message: "Book library server is running" });
 });
 
 app.get("/api/search", async (req, res) => {
   const q = (req.query.q || "").trim();
-  if (!q) return res.status(400).json({ error: "Kitab ka naam likhiye" });
+  if (!q) return res.status(400).json({ error: "Please enter a book or author name" });
 
   try {
     const fields =
@@ -19,9 +19,9 @@ app.get("/api/search", async (req, res) => {
     const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=20&fields=${fields}`;
 
     const r = await fetch(url, {
-      headers: { "User-Agent": "BookLibraryApp (apna-email@example.com)" },
+      headers: { "User-Agent": "BookLibraryApp (your-email@example.com)" },
     });
-    if (!r.ok) throw new Error("Open Library ne jawab nahi diya");
+    if (!r.ok) throw new Error("Open Library did not respond");
 
     const data = await r.json();
     const books = data.docs.map((d) => ({
@@ -38,10 +38,10 @@ app.get("/api/search", async (req, res) => {
 
     res.json(books);
   } catch (err) {
-    res.status(502).json({ error: "Search abhi nahi ho paya" });
+    res.status(502).json({ error: "Search failed. Please try again." });
   }
 });
 
 app.listen(3000, () => {
-  console.log("Server http://localhost:3000 par chal raha hai");
+  console.log("Server running on http://localhost:3000");
 });
