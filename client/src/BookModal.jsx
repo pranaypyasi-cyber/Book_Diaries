@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function BookModal({ book, onClose }) {
+function BookModal({ book, user, entry, onSave, onRemove, onLogin, onClose }) {
   const [reading, setReading] = useState(false);
   const canRead = book.free && book.archiveId;
 
@@ -41,6 +41,28 @@ function BookModal({ book, onClose }) {
               <span className={book.free ? "tag free" : "tag"}>
                 {book.free ? "Free to read" : "Borrow / Preview"}
               </span>
+
+              <div className="save-box">
+                {!user ? (
+                  <button onClick={onLogin}>Log in to save this book</button>
+                ) : entry ? (
+                  <>
+                    <select
+                      value={entry.status}
+                      onChange={(e) => onSave(book, e.target.value)}
+                    >
+                      <option value="want">Want to read</option>
+                      <option value="reading">Reading</option>
+                      <option value="finished">Finished</option>
+                    </select>
+                    <button onClick={() => onRemove(book)}>Remove</button>
+                  </>
+                ) : (
+                  <button onClick={() => onSave(book, "want")}>
+                    Add to my library
+                  </button>
+                )}
+              </div>
 
               <div className="actions">
                 {canRead ? (
